@@ -24,6 +24,7 @@ before_cache:
 
 before_script:
   - export CARGO_TARGET_DIR=$(pwd)/target
+  - export CARGO_BUILD_TARGET=x86_64-unknown-linux-gnu
   # It's kinda useless to save debug info on CI.
   # incremental: Is it necessary?
   - export RUSTFLAGS='-C debuginfo=0 -C incremental=false'
