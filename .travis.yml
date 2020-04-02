@@ -20,11 +20,17 @@ before_cache:
   - cargo install --debug cargo-cache
   - find $HOME/.cargo/bin/ ! -type d -exec strip {} \;
   - cargo cache --autoclean
+  - rm -f "$HOME"/.cargo/bin/{rustc,rustdoc,cargo,rust-lldb,rust-gdb,rls,cargo-clippy,clippy-driver,cargo-miri,rustfmt,cargo-fmt}
+  # Cargo always rebuilds and runs the host build script and proc-macro artifacts
+  # on new Travis instance.
+  - rm -rf target/{debug,release}
 
 before_script:
   - export CARGO_TARGET_DIR=$(pwd)/target
+  - export CARGO_BUILD_TARGET=x86_64-unknown-linux-gnu
   # It's kinda useless to save debug info on CI.
-  - export RUSTFLAGS='-C debuginfo=0'
+  # incremental: Is it necessary?
+  - export RUSTFLAGS='-C debuginfo=0 -C incremental=false'
   # NOTE: To increase caching efficiency, keep the same mdbook version
   # in blacksmith/Cargo.lock too
   - cargo install -v --debug --locked mdbook --vers '=0.3.6'
